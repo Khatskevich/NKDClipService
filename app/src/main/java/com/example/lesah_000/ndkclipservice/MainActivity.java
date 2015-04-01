@@ -61,7 +61,6 @@ public class MainActivity extends Activity {
     {
         System.loadLibrary("JNIClipboard");
     }
-
     public native int dataAvailableJNI();
     class ClipboardListener implements ClipboardManager.OnPrimaryClipChangedListener
     {

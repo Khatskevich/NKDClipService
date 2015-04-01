@@ -65,14 +65,6 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipService
 
 /*
  * Class:     com_example_lesah_000_ndkclipservice_ClipServiceDaemon
- * Method:    dataAvailableJNI
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_dataAvailableJNI
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_example_lesah_000_ndkclipservice_ClipServiceDaemon
  * Method:    dataSendMesgToHostJNI
  * Signature: (Ljava/lang/String;)I
  */

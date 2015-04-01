@@ -7,6 +7,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/*
+ * Class:     com_example_lesah_000_ndkclipservice_AutoStart
+ * Method:    dataAvailableJNI
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_AutoStart_dataAvailableJNI
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

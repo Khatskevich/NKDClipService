@@ -118,6 +118,15 @@ JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_MainActivity_d
 		return ret;
 }
 
+JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_AutoStart_dataAvailableJNI(JNIEnv * env, jobject obj){
+	  	LOG("Main Activity Data Available connected = %d\n",connected );
+		LOG("Main Activity Data Available client = %d\n",client );
+		VbClipConnect();
+
+		int rc = VbglR3ClipboardReportFormats(client, 1);
+		jint ret = rc;
+		return ret;
+}
 
 JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_dataSendMesgToHostJNI(JNIEnv * env, jobject obj, jstring str){
 	VbClipConnect();

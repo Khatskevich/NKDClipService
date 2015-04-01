@@ -22,14 +22,6 @@ android {
                 jni.srcDirs = []
                 jniLibs.srcDir 'src/main/libs'
             }
-    productFlavors
-            {
-                x86
-                        {
-                            ndk{
-                                abiFilter "x86"                            }
-                        }
-            }
     buildTypes {
         release {
             minifyEnabled false

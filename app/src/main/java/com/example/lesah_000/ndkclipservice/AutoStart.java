@@ -42,9 +42,7 @@ public class AutoStart extends BroadcastReceiver
         System.loadLibrary("JNIClipboard");
     }
 
-    private native String takeMesgJNI();
     public native int dataAvailableJNI();
-    public native int dataSendMesgToHostJNI( String mesg);
 
     class ClipboardListener implements ClipboardManager.OnPrimaryClipChangedListener
     {
