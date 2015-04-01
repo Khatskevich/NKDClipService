@@ -43,7 +43,6 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipService
 	VbClipConnect();
 	
 	rc = VbglR3ClipboardGetHostMsg(client, &Msg, &fFormats);
-	
 	switch( Msg)
         {
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_FORMATS:
@@ -89,7 +88,7 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipService
 		}
             
     }
-		
+
 	//mainloop();
 	char str1[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
 	jstring result = (*env)->NewString(env, (jchar*)str1,0);
@@ -108,6 +107,17 @@ JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDae
 		jint ret = rc;
 		return ret;
 }
+
+JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_MainActivity_dataAvailableJNI(JNIEnv * env, jobject obj){
+	  	LOG("Main Activity Data Available connected = %d\n",connected );
+		LOG("Main Activity Data Available client = %d\n",client );
+		VbClipConnect();
+
+		int rc = VbglR3ClipboardReportFormats(client, 1);
+		jint ret = rc;
+		return ret;
+}
+
 
 JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_dataSendMesgToHostJNI(JNIEnv * env, jobject obj, jstring str){
 	VbClipConnect();
@@ -137,4 +147,5 @@ JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDae
 	}	
 	  return ret;
 }
-  
+
+
