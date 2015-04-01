@@ -10,7 +10,19 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        ndk{
+            moduleName "JNIClipboard"
+        }
+
     }
+
+    sourceSets.main
+            {
+                jni.srcDirs = []
+                jniLibs.srcDir 'sec/main/libs'
+            }
+
     buildTypes {
         release {
             minifyEnabled false
