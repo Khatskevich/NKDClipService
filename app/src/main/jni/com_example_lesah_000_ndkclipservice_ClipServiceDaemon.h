@@ -57,10 +57,26 @@ extern "C" {
 #define com_example_lesah_000_ndkclipservice_ClipServiceDaemon_START_FLAG_RETRY 2L
 /*
  * Class:     com_example_lesah_000_ndkclipservice_ClipServiceDaemon
- * Method:    takeMesgJNI
+ * Method:    takeMesgFormatsJNI
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgFormatsJNI
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_example_lesah_000_ndkclipservice_ClipServiceDaemon
+ * Method:    takeMesgHTMLJNI
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgJNI
+JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgHTMLJNI
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_example_lesah_000_ndkclipservice_ClipServiceDaemon
+ * Method:    takeMesgTEXTJNI
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgTEXTJNI
   (JNIEnv *, jobject);
 
 /*

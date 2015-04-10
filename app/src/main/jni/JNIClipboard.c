@@ -5,7 +5,7 @@
 //#include "base/android/jni_string.h"
 //#include "base/strings/utf_string_conversions.h"
 
-#define LOGGING1
+#define LOGGING
 #ifdef LOGGING
 #define LOG(x, ... ) do{fprintf(log_file, x , ##__VA_ARGS__ );fflush(log_file);}while(0)
 #else
@@ -38,6 +38,89 @@ int VbClipConnect(){
 }
 
 
+
+JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgFormatsJNI (JNIEnv *env, jobject obj){
+
+	VbClipConnect();
+
+	rc = VbglR3ClipboardGetHostMsg(client, &Msg, &fFormats);
+	switch( Msg)
+        {
+        case VBOX_SHARED_CLIPBOARD_HOST_MSG_FORMATS:
+        {
+			LOG("IN VBOX_SHARED_CLIPBOARD_HOST_MSG_FORMATS ,  rc = %d \n", rc);
+            LOG("fFormats =  %u\n" , fFormats);
+			return (int)fFormats;
+            break;
+        }
+        case VBOX_SHARED_CLIPBOARD_HOST_MSG_READ_DATA:
+        {
+			LOG("IN VBOX_SHARED_CLIPBOARD_HOST_MSG_READ_DATA\n");
+			LOG("fFormats =  %u\n" , fFormats);
+			return  -((int)fFormats);
+			break;
+        }
+        case VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT:
+        {
+            LOG("Msg = MSG_QUIT\n");
+			return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+            break;
+        }
+        default:{
+			LOG("IN case default\n");
+			return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+			printf("Msg = error\n");
+		}
+    }
+	char str1[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
+	jstring result = (*env)->NewString(env, (jchar*)str1,0);
+	return result;
+}
+
+JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgTEXTJNI(JNIEnv *env, jobject obj){
+    LOG("ClipServiceDaemon_takeMesgTEXTJNI\n");
+    char valera[10000];
+    uint32_t count;
+    if ( fFormats == 0 ){
+    	 return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+    }
+    rc = VbglR3ClipboardReadData(client, VBOX_SHARED_CLIPBOARD_FMT_UNICODETEXT , (void*) valera, 10000, &count);
+    if ( rc != 0 ){
+        LOG("rc = %d\n", rc);
+        return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+    }
+    LOG("VbglR3ClipboardReadData retval = %d , formats = %u, count = %u\n", rc, fFormats, count);
+    if ( count > 1000){
+        	return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+    }
+    jstring result = (*env)->NewString(env, (jchar*)valera,count / 2 );
+    return result;
+}
+
+
+JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgHTMLJNI(JNIEnv *env, jobject obj){
+    LOG("ClipServiceDaemon_takeMesgTEXTJNI\n");
+    char valera[10000];
+    uint32_t count;
+    if ( fFormats == 0 ){
+    	 return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+    }
+    rc = VbglR3ClipboardReadData(client, VBOX_SHARED_CLIPBOARD_FMT_HTML , (void*) valera, 10000, &count);
+    if ( rc != 0 ){
+        LOG("rc = %d\n", rc);
+        return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+    }
+    LOG("VbglR3ClipboardReadData retval = %d , formats = %u, count = %u\n", rc, fFormats, count);
+    if ( count > 1000){
+        	return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+    }
+    jstring result = (*env)->NewString(env, (jchar*)valera,count / 2 );
+    return result;
+}
+
+
+
+/*
 JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_takeMesgJNI(JNIEnv *env, jobject obj){
 	
 	VbClipConnect();
@@ -56,8 +139,11 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipService
 				 return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
 			}
             rc = VbglR3ClipboardReadData(client, fFormats, (void*) valera, 10000, &count);
-			LOG("VbglR3ClipboardReadData retval = %d\n", rc);
-			
+			LOG("VbglR3ClipboardReadData retval = %d , formats = %u, count = %u\n", rc, fFormats, count);
+			if ( count > 1000){
+			    	return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+                    break;
+			}
 			jstring result = (*env)->NewString(env, (jchar*)valera,count / 2 );
 			return result;
             break;
@@ -71,7 +157,7 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipService
             //printf("Msg = MSG_READ_DATA\n");
 			//int VbglR3ClipboardWriteData(uint32_t u32ClientId, uint32_t fFormat, void *pv, uint32_t cb)
 			//rc = VbglR3ClipboardWriteData( client, 1 , valera , 7);
-            //break;
+            break;
         }
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT:
         {
@@ -96,7 +182,7 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipService
 
     //(*env)->NewStringUTF(env, "Hello From JNI");
 }
-
+*/
 
 JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndkclipservice_ClipServiceDaemon_dataAvailableJNI(JNIEnv * env, jobject obj){
 	  	LOG("Main Activity Data Available connected = %d\n",connected );

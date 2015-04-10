@@ -35,56 +35,56 @@ public class ClipServiceDaemon extends IntentService {
             }
         });
         while(1>0) {
-            String msg;
+            int formats;
             try {
-                msg = takeMesgJNI();
-            }catch (Exception e){
-                msg = "";
-            }
-            final String mesg = msg;
-            System.out.println("HelloJniMesg = " + mesg);
-            System.out.println("HelloJniMesgLen = "+ mesg.length());
-            if ( mesg.length()!=0 ) {
-                ClipData clip = ClipData.newPlainText("VBOX_CLIP_DATA", mesg);
-                mClipboard.setPrimaryClip(clip);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Clip gets data!: " + mesg, Toast.LENGTH_SHORT).show();
+                formats = takeMesgFormatsJNI();
+                if ( formats < 0 ){ // send message to host
+                    ClipData abc = mClipboard.getPrimaryClip();
+                    ClipData.Item item;
+                    String tempText;
+                    try{
+                        item = abc.getItemAt(0);
+                        tempText = item.getText().toString();
+                    }catch (Exception e){
+                        tempText = "";
                     }
-                });
-            }else{
-                ClipData abc = mClipboard.getPrimaryClip();
-                ClipData.Item item;
-                String tempText;
-                try{
-                    item = abc.getItemAt(0);
-                    tempText = item.getText().toString();
-                }catch (Exception e){
-                    tempText = "";
+                    final String text = tempText;
+                    final int ret =dataSendMesgToHostJNI(text);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Clip send data: "+text+"ret = " + ret, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else if ( formats > 0){ // get mesg
+
+                    final String mesg = takeMesgTEXTJNI();
+                    ClipData clip = ClipData.newPlainText("VBOX_CLIP_DATA", mesg);
+                    mClipboard.setPrimaryClip(clip);
+                    handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Clip gets data!: " + mesg, Toast.LENGTH_SHORT).show();
+                            }
+                    });
+
+
+
                 }
-                final String text = tempText;
-                final int ret =dataSendMesgToHostJNI(text);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Clip send data: "+text+"ret = " + ret, Toast.LENGTH_SHORT).show();
-                    }
-                });
+
+            }catch (Exception e){
+                formats = -1;
             }
-            /*try {
-                Thread.sleep(8000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
-        }
+                    }
     }
     static
     {
         System.loadLibrary("JNIClipboard");
     }
-
-    private native String takeMesgJNI();
+    private native int takeMesgFormatsJNI();
+    //private native String takeMesgBMPJNI();
+    private native String takeMesgHTMLJNI();
+    private native String takeMesgTEXTJNI();
     //public native int dataAvailableJNI();
     public native int dataSendMesgToHostJNI( String mesg);
 }
